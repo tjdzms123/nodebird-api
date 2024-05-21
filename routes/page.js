@@ -5,17 +5,18 @@ const {
   renderMain,
   renderProfile,
 } = require("../controllers/page");
+const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
 router.use((req, res, next) => {
-  res.locals.user = null;
+  res.locals.user = req.user;
   res.locals.followerCount = 0;
   res.locals.followingCount = 0;
   res.locals.followingIdList = [];
   next(); // 미들웨어 마지막엔 항상 next!!!!
 });
 
-router.get("/profile", renderProfile);
-router.get("/join", renderJoin);
+router.get("/profile", isLoggedIn, renderProfile);
+router.get("/join", isNotLoggedIn, renderJoin);
 router.get("/", renderMain);
 
 module.exports = router;
