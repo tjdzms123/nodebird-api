@@ -1,10 +1,10 @@
 const passport = require("passport");
-const { Strategy: kakaoStrategy } = require("passport-kakao");
+const { Strategy: KakaoStrategy } = require("passport-kakao");
 const User = require("../models/user");
 
 module.exports = () => {
   passport.use(
-    new kakaoStrategy(
+    new KakaoStrategy(
       {
         clientID: process.env.KAKAO_ID,
         callbackURL: "/auth/kakao/callback",
@@ -16,7 +16,7 @@ module.exports = () => {
             where: { snsId: profile.id, provider: "kakao" },
           });
           if (exUser) {
-            done(null, { exUser, accessToken: accessToken || "" });
+            return done(null, { ...exUser.dataValues, accessToken });
           } else {
             const newUser = await User.create({
               email: profile._json?.kakao_account?.email,
@@ -24,12 +24,11 @@ module.exports = () => {
               snsId: profile.id,
               provider: "kakao",
             });
-
-            done(null, newUser);
+            return done(null, { ...newUser.dataValues, accessToken });
           }
         } catch (error) {
           console.error(error);
-          done(error);
+          return done(error);
         }
       }
     )
