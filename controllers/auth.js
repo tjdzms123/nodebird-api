@@ -36,7 +36,7 @@ exports.login = (req, res, next) => {
       // 로직실패
       return res.redirect(`/?loginError=${info.message}`);
     }
-    return req.login(user, (loginError) => {
+    return req.logIn(user, (loginError) => {
       // 로그인 성공
       if (loginError) {
         console.error(loginError);

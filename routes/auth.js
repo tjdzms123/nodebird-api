@@ -1,5 +1,6 @@
 const express = require("express");
 const passport = require("passport");
+const axios = require("axios");
 const { isNotLoggedIn, isLoggedIn } = require("../middlewares");
 const { join, login, logout } = require("../controllers/auth");
 const router = express.Router();
@@ -26,5 +27,42 @@ router.get(
     res.redirect("/");
   }
 );
+
+// 카카오 로그아웃
+// auth//kakao/logout
+router.get("/kakao/logout", isLoggedIn, async (req, res) => {
+  try {
+    const ACCESS_TOKEN = req.user.accessToken; // res.locals.user에서 req.user로 변경
+    const response = await axios.post(
+      "https://kapi.kakao.com/v1/user/unlink",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${ACCESS_TOKEN}`,
+        },
+      }
+    );
+
+    // 성공적으로 연결 해제된 경우 로그아웃 처리
+    req.logout((err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      req.session.destroy((err) => {
+        if (err) {
+          console.error(err);
+          return res
+            .status(500)
+            .json({ message: "Session destruction failed" });
+        }
+        res.redirect("/");
+      });
+    });
+  } catch (error) {
+    console.error("Kakao unlink failed:", error);
+    return res.status(500).json({ message: "Kakao unlink failed", error });
+  }
+});
 
 module.exports = router;
