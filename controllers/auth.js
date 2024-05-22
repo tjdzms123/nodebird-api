@@ -11,7 +11,7 @@ exports.join = async (req, res, next) => {
       return res.redirect("/join?error=exist");
     }
     const hash = await bcrypt.hash(password, 12);
-    // 비밀번호 암호화, 숫자가 높을수록 보안강함 but 용량 커짐
+    // 비밀번호 암호화, 숫자가 높을수록 보안강하지만 느려짐
     await User.create({
       email,
       nick,

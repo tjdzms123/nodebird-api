@@ -48,7 +48,10 @@ app.use(
     },
   })
 );
-app.use(passport.initialize()); // req.user, req.login, req.isAuthenticate, req.logout 생성
+// passport는 반드시 express.session 밑에다가!
+app.use(passport.initialize());
+// passport를 연결하면 아래 친구들이 생긴다
+// req.user, req.login, req.isAuthenticate, req.logout
 app.use(passport.session()); // connect.sid 라는 이름으로 세션 쿠키가 브라우저로 전송
 
 app.use("/", pageRouter);
