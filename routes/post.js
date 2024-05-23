@@ -4,7 +4,11 @@ const path = require("path");
 const fs = require("fs");
 
 const { isNotLoggedIn, isLoggedIn } = require("../middlewares");
-const { afterUploadImage, uploadPost } = require("../controllers/post");
+const {
+  afterUploadImage,
+  uploadPost,
+  deletePost,
+} = require("../controllers/post");
 
 const router = express.Router();
 
@@ -36,5 +40,7 @@ router.post("/img", isLoggedIn, upload.single("img"), afterUploadImage);
 const upload2 = multer({});
 // 이미지가 없을 땐, none()
 router.post("/", isLoggedIn, upload2.none(), uploadPost);
+
+router.delete("/delete/:id", isLoggedIn, deletePost);
 
 module.exports = router;

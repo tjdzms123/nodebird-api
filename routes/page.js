@@ -4,6 +4,7 @@ const {
   renderJoin,
   renderMain,
   renderProfile,
+  renderHashtag,
 } = require("../controllers/page");
 const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
@@ -18,5 +19,6 @@ router.use((req, res, next) => {
 router.get("/profile", isLoggedIn, renderProfile);
 router.get("/join", isNotLoggedIn, renderJoin);
 router.get("/", renderMain);
+router.get("/hashtag", renderHashtag);
 
 module.exports = router;

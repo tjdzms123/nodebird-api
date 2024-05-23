@@ -19,7 +19,8 @@ exports.uploadPost = async (req, res, next) => {
     if (hashtags) {
       const result = await Promise.all(
         hashtags.map((tag) => {
-          return Hashtag.findOrCreate({ // 찾아서 없으면 만들어주는 메서드
+          return Hashtag.findOrCreate({
+            // 찾아서 없으면 만들어주는 메서드
             where: {
               title: tag.slice(1).toLowerCase(), // # 제외시키기 위한 메서드
             },
@@ -29,6 +30,27 @@ exports.uploadPost = async (req, res, next) => {
       console.log("결과", result);
       await post.addHashtags(result.map((r) => r[0]));
     }
+    res.redirect("/");
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+exports.deletePost = async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (req.user.id !== post.UserId) {
+      return res.status(403).send("삭제 권한이 없습니다.");
+    }
+    if (!post) {
+      return res.status(404).send("게시물을 찾을 수 없습니다.");
+    }
+    await Post.destroy({ where: { id: req.params.id } });
     res.redirect("/");
   } catch (error) {
     console.error(error);
