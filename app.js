@@ -12,6 +12,7 @@ dotenv.config();
 // process.env.COOKIE_SECRET 있음
 const pageRouter = require("./routes/page");
 const authRouter = require("./routes/auth");
+const postRouter = require("./routes/post");
 const passportConfig = require("./passport");
 
 const app = express();
@@ -34,6 +35,7 @@ sequelize
 
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/img", express.static(path.join(__dirname, "uploads")));
 app.use(express.json()); // req.body를 ajax json 요청으로부터 받음
 app.use(express.urlencoded({ extended: false })); // req.body 폼으로부터 받음
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -56,6 +58,7 @@ app.use(passport.session()); // connect.sid 라는 이름으로 세션 쿠키가
 
 app.use("/", pageRouter);
 app.use("/auth", authRouter);
+app.use("/post", postRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 없는 페이지 입니다.`);
