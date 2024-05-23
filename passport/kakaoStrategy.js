@@ -10,6 +10,7 @@ module.exports = () => {
         callbackURL: "/auth/kakao/callback",
       },
       async (accessToken, refreshToken, profile, done) => {
+        // profile 구조가 자주 바뀌니 주의 필요
         console.log("profile", profile);
         try {
           const exUser = await User.findOne({
