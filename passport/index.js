@@ -12,7 +12,21 @@ module.exports = () => {
 
   passport.deserializeUser(({ id, accessToken }, done) => {
     // 구조 분해하여 id와 accessToken을 가져옴
-    User.findOne({ where: { id } })
+    User.findOne({
+      where: { id },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nick"],
+          as: "Followers",
+        },
+        {
+          model: User,
+          attributes: ["id", "nick"],
+          as: "Followings",
+        },
+      ],
+    })
       .then((user) => {
         if (user) {
           user.accessToken = accessToken; // user 객체에 accessToken을 추가

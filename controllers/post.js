@@ -13,13 +13,13 @@ exports.uploadPost = async (req, res, next) => {
     const post = await Post.create({
       content: req.body.content,
       img: req.body.url,
-      userId: req.user.id,
+      UserId: req.user.id,
     });
     const hashtags = req.body.content.match(/#[^\s#]*/g);
     if (hashtags) {
       const result = await Promise.all(
         hashtags.map((tag) => {
-          return Hashtag.findOrCreate({
+          return Hashtag.findOrCreate({ // 찾아서 없으면 만들어주는 메서드
             where: {
               title: tag.slice(1).toLowerCase(), // # 제외시키기 위한 메서드
             },
