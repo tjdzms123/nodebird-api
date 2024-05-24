@@ -51,7 +51,7 @@ exports.deletePost = async (req, res, next) => {
       return res.status(404).send("게시물을 찾을 수 없습니다.");
     }
     await Post.destroy({ where: { id: req.params.id } });
-    res.redirect("/");
+    res.send("삭제 완료");
   } catch (error) {
     console.error(error);
     next(error);
